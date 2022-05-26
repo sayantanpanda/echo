@@ -1,6 +1,12 @@
 // create Agora client
 var client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
+var configurationOf3A = {
+  AEC:false,
+  AGC:false,
+  ANS:false,
+}
+
 var localTracks = {
   videoTrack: null,
   audioTrack: null
@@ -52,6 +58,15 @@ $("#join-form").submit(async function (e) {
 $("#leave").click(function (e) {
   leave();
 })
+$("#aec").change(function (e) {
+  configurationOf3A.aec=e.currentTarget.checked;
+})
+$("#agc").change(function (e) {
+  configurationOf3A.agc=e.currentTarget.checked;
+})
+$("#ans").change(function (e) {
+  configurationOf3A.ans=e.currentTarget.checked;
+})
 
 async function join() {
 
@@ -64,7 +79,11 @@ async function join() {
     // join the channel
     client.join(options.appid, options.channel, options.token || null),
     // create local tracks, using microphone and camera
-    AgoraRTC.createMicrophoneAudioTrack(),
+    AgoraRTC.createMicrophoneAudioTrack({
+      AEC: configurationOf3A.aec,
+      AGC: configurationOf3A.agc,
+      ANS: configurationOf3A.ans,
+    }),
     AgoraRTC.createCameraVideoTrack()
   ]);
   
